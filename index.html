@@ -68,45 +68,67 @@
         // --- 資料庫 ---
         const cardData = {
             animals: [
-                { name: '貓', image: 'https://placehold.co/200x200/FFC0CB/000000?text=貓' },
-                { name: '狗', image: 'https://placehold.co/200x200/A52A2A/FFFFFF?text=狗' },
-                { name: '大象', image: 'https://placehold.co/200x200/808080/FFFFFF?text=大象' },
-                { name: '獅子', image: 'https://placehold.co/200x200/FFD700/000000?text=獅子' },
-                { name: '猴子', image: 'https://placehold.co/200x200/964B00/FFFFFF?text=猴子' },
-                { name: '兔子', image: 'https://placehold.co/200x200/FFFFFF/000000?text=兔子' },
-                { name: '熊', image: 'https://placehold.co/200x200/8B4513/FFFFFF?text=熊' },
-                { name: '魚', image: 'https://placehold.co/200x200/00BFFF/FFFFFF?text=魚' },
+                { name: '貓', emoji: '🐱' },
+                { name: '狗', emoji: '🐶' },
+                { name: '大象', emoji: '🐘' },
+                { name: '獅子', emoji: '🦁' },
+                { name: '猴子', emoji: '🐵' },
+                { name: '兔子', emoji: '🐰' },
+                { name: '熊', emoji: '🐻' },
+                { name: '老虎', emoji: '🐯' },
+                { name: '長頸鹿', emoji: '🦒' },
+                { name: '斑馬', emoji: '🦓' },
             ],
             fruits: [
-                { name: '蘋果', image: 'https://placehold.co/200x200/FF0000/FFFFFF?text=蘋果' },
-                { name: '香蕉', image: 'https://placehold.co/200x200/FFFF00/000000?text=香蕉' },
-                { name: '橘子', image: 'https://placehold.co/200x200/FFA500/FFFFFF?text=橘子' },
-                { name: '草莓', image: 'https://placehold.co/200x200/FF6347/FFFFFF?text=草莓' },
-                { name: '西瓜', image: 'https://placehold.co/200x200/228B22/FFFFFF?text=西瓜' },
-                { name: '葡萄', image: 'https://placehold.co/200x200/800080/FFFFFF?text=葡萄' },
-                { name: '鳳梨', image: 'https://placehold.co/200x200/F4A460/000000?text=鳳梨' },
+                { name: '蘋果', emoji: '🍎' },
+                { name: '香蕉', emoji: '🍌' },
+                { name: '橘子', emoji: '🍊' },
+                { name: '草莓', emoji: '🍓' },
+                { name: '西瓜', emoji: '🍉' },
+                { name: '葡萄', emoji: '🍇' },
+                { name: '鳳梨', emoji: '🍍' },
+                { name: '櫻桃', emoji: '🍒' },
+                { name: '芒果', emoji: '🥭' },
+                { name: '酪梨', emoji: '🥑' },
             ],
             items: [
-                { name: '桌子', image: 'https://placehold.co/200x200/D2B48C/000000?text=桌子' },
-                { name: '椅子', image: 'https://placehold.co/200x200/CD853F/FFFFFF?text=椅子' },
-                { name: '床', image: 'https://placehold.co/200x200/ADD8E6/000000?text=床' },
-                { name: '電視', image: 'https://placehold.co/200x200/000000/FFFFFF?text=電視' },
-                { name: '書', image: 'https://placehold.co/200x200/4682B4/FFFFFF?text=書' },
-                { name: '球', image: 'https://placehold.co/200x200/FF4500/FFFFFF?text=球' },
-                { name: '牙刷', image: 'https://placehold.co/200x200/00FFFF/000000?text=牙刷' },
-                { name: '杯子', image: 'https://placehold.co/200x200/E6E6FA/000000?text=杯子' },
+                { name: '汽車', emoji: '🚗' },
+                { name: '椅子', emoji: '🪑' },
+                { name: '床', emoji: '🛏️' },
+                { name: '電視', emoji: '📺' },
+                { name: '書', emoji: '📖' },
+                { name: '球', emoji: '⚽' },
+                { name: '牙刷', emoji: '🪥' },
+                { name: '杯子', emoji: '☕' },
+                { name: '時鐘', emoji: '⏰' },
+                { name: '手機', emoji: '📱' },
             ],
             emotions: [
-                { name: '開心', image: 'https://placehold.co/200x200/FFFF00/000000?text=開心' },
-                { name: '難過', image: 'https://placehold.co/200x200/1E90FF/FFFFFF?text=難過' },
-                { name: '生氣', image: 'https://placehold.co/200x200/DC143C/FFFFFF?text=生氣' },
-                { name: '驚訝', image: 'https://placehold.co/200x200/FF8C00/FFFFFF?text=驚訝' },
-                { name: '害怕', image: 'https://placehold.co/200x200/8A2BE2/FFFFFF?text=害怕' },
-                { name: '愛睏', image: 'https://placehold.co/200x200/C0C0C0/000000?text=愛睏' },
+                { name: '開心', emoji: '😊' },
+                { name: '難過', emoji: '😢' },
+                { name: '生氣', emoji: '😠' },
+                { name: '驚訝', emoji: '😮' },
+                { name: '害怕', emoji: '😨' },
+                { name: '愛睏', emoji: '😴' },
+                { name: '大笑', emoji: '😂' },
+                { name: '思考', emoji: '🤔' },
+                { name: '哭泣', emoji: '😭' },
+                { name: '喜愛', emoji: '🥰' },
             ],
             custom: []
         };
         
+        // 從 localStorage 讀取自製圖卡
+        try {
+            const savedCustomCards = localStorage.getItem('customFlashcards');
+            if (savedCustomCards) {
+                cardData.custom = JSON.parse(savedCustomCards);
+            }
+        } catch (e) {
+            console.error("無法解析儲存的圖卡資料:", e);
+            localStorage.removeItem('customFlashcards');
+        }
+
         // --- 變數宣告 ---
         const cardGrid = document.getElementById('card-grid');
         const categoryNav = document.getElementById('category-nav');
@@ -167,17 +189,29 @@
 
             // 建立圖卡
             const cards = cardData[category];
-            cards.forEach(card => {
+            cards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
                 cardElement.className = 'card-item bg-white rounded-2xl shadow-lg p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-xl active:scale-95';
                 
+                let cardVisualHTML = '';
+                // 如果是自製圖卡(有image)，就顯示圖片
+                if (card.image) { 
+                    cardVisualHTML = `<img src="${card.image}" alt="${card.name}" class="w-full h-auto object-cover rounded-lg aspect-square">`;
+                } 
+                // 如果是預設圖卡(有emoji)，就顯示符號
+                else if (card.emoji) { 
+                    cardVisualHTML = `<div class="w-full aspect-square flex items-center justify-center rounded-lg bg-sky-100">
+                                        <span class="text-7xl md:text-8xl">${card.emoji}</span>
+                                      </div>`;
+                }
+
                 cardElement.innerHTML = `
-                    <img src="${card.image}" alt="${card.name}" class="w-full h-auto object-cover rounded-lg aspect-square">
+                    ${cardVisualHTML}
                     <p class="text-xl md:text-2xl font-bold text-gray-700 text-center">${card.name}</p>
                 `;
 
                 cardElement.addEventListener('click', () => {
-                    speak(card.name);
+                    speak(card.pronunciation || card.name); // 優先使用發音修正，否則用原名
                     // 點擊動畫
                     cardElement.classList.add('card-clicked');
                     setTimeout(() => {
@@ -223,6 +257,14 @@
             
             cardData.custom.push({ name: text, image: uploadedImage });
             
+            // 將自製圖卡儲存到 localStorage
+            try {
+                localStorage.setItem('customFlashcards', JSON.stringify(cardData.custom));
+            } catch (e) {
+                console.error("儲存圖卡失敗:", e);
+                errorMessage.textContent = '抱歉，儲存圖卡時發生錯誤。';
+            }
+
             // 重設輸入欄位
             cardText.value = '';
             uploadedImage = null;
@@ -252,3 +294,7 @@
     </script>
 </body>
 </html>
+
+
+
+
