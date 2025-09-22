@@ -34,7 +34,7 @@
             <button data-category="animals" class="category-btn bg-blue-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-all duration-200">可愛動物</button>
             <button data-category="fruits" class="category-btn bg-green-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-200">蔬果派對</button>
             <button data-category="items" class="category-btn bg-yellow-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 transition-all duration-200">生活用品</button>
-            <button data-category="emotions" class="category-btn bg-purple-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 transition-all duration-200">我的心情</p>
+            <button data-category="emotions" class="category-btn bg-purple-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 transition-all duration-200">我的心情</button>
             <button data-category="custom" class="category-btn bg-pink-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 transition-all duration-200">自製圖卡</button>
         </nav>
 
@@ -45,7 +45,7 @@
 
         <!-- 自製圖卡區 -->
         <section id="custom-card-section" class="mt-12 p-6 bg-white rounded-2xl shadow-lg border border-gray-200 hidden">
-            <h2 class="text-2xl font-bold text-center text-pink-700 mb-6">建立你自己的圖卡</h2>
+            <h2 id="custom-section-title" class="text-2xl font-bold text-center text-pink-700 mb-6">建立你自己的圖卡</h2>
             <div class="flex flex-col md:flex-row items-center gap-6">
                 <div class="w-full md:w-1/3 text-center">
                     <label for="image-upload" class="cursor-pointer">
@@ -61,110 +61,92 @@
                         <input type="text" id="card-text" placeholder="例如：爸爸的車" class="w-full px-4 py-2 text-lg border-2 border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 transition">
                     </div>
                     <button id="add-card-btn" class="w-full bg-pink-500 text-white py-3 rounded-lg font-bold text-lg shadow-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 transition-transform transform hover:scale-105">新增圖卡</button>
+                    <button id="cancel-edit-btn" class="w-full bg-gray-400 text-white py-3 rounded-lg font-bold text-lg shadow-md hover:bg-gray-500 mt-2 hidden">取消編輯</button>
                 </div>
             </div>
              <p id="error-message" class="text-red-500 text-center mt-4"></p>
         </section>
-
     </div>
+    
+    <!-- 確認刪除彈出視窗 -->
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white rounded-lg p-6 shadow-xl w-11/12 max-w-sm text-center">
+            <h3 class="text-xl font-bold mb-4" id="modal-title">確定要刪除這張圖卡嗎？</h3>
+            <p class="text-gray-600 mb-6" id="modal-body">這個操作無法復原喔！</p>
+            <div class="flex justify-center gap-4">
+                <button id="modal-cancel-btn" class="px-6 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">取消</button>
+                <button id="modal-confirm-btn" class="px-6 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">確定刪除</button>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // --- 資料庫 ---
         const cardData = {
             animals: [
-                { name: '貓咪', emoji: '🐱' },
-                { name: '小狗', emoji: '🐶' },
-                { name: '大象', emoji: '🐘' },
-                { name: '獅子', emoji: '🦁' },
-                { name: '猴子', emoji: '🐵' },
-                { name: '兔子', emoji: '🐰' },
-                { name: '熊', emoji: '🐻' },
-                { name: '老虎', emoji: '🐯' },
-                { name: '長頸鹿', emoji: '🦒' },
-                { name: '斑馬', emoji: '🦓' },
-                { name: '企鵝', emoji: '🐧' },
-                { name: '無尾熊', emoji: '🐨' },
+                { name: '貓咪', emoji: '🐱' }, { name: '小狗', emoji: '🐶' }, { name: '大象', emoji: '🐘' }, { name: '獅子', emoji: '🦁' }, { name: '猴子', emoji: '🐵' }, { name: '兔子', emoji: '🐰' }, { name: '熊', emoji: '🐻' }, { name: '老虎', emoji: '🐯' }, { name: '長頸鹿', emoji: '🦒' }, { name: '斑馬', emoji: '🦓' }, { name: '企鵝', emoji: '🐧' }, { name: '無尾熊', emoji: '🐨' },
             ],
             fruits: [
-                { name: '蘋果', emoji: '🍎' },
-                { name: '香蕉', emoji: '🍌' },
-                { name: '橘子', emoji: '🍊' },
-                { name: '草莓', emoji: '🍓' },
-                { name: '西瓜', emoji: '🍉' },
-                { name: '葡萄', emoji: '🍇' },
-                { name: '鳳梨', emoji: '🍍' },
-                { name: '櫻桃', emoji: '🍒' },
-                { name: '芒果', emoji: '🥭' },
-                { name: '酪梨', emoji: '🥑' },
-                { name: '藍莓', emoji: '🫐' },
-                { name: '奇異果', emoji: '🥝' },
+                { name: '蘋果', emoji: '🍎' }, { name: '香蕉', emoji: '🍌' }, { name: '橘子', emoji: '🍊' }, { name: '草莓', emoji: '🍓' }, { name: '西瓜', emoji: '🍉' }, { name: '葡萄', emoji: '🍇' }, { name: '鳳梨', emoji: '🍍' }, { name: '櫻桃', emoji: '🍒' }, { name: '芒果', emoji: '🥭' }, { name: '酪梨', emoji: '🥑' }, { name: '藍莓', emoji: '🫐' }, { name: '奇異果', emoji: '🥝' },
             ],
             items: [
-                { name: '汽車', emoji: '🚗' },
-                { name: '椅子', emoji: '🪑' },
-                { name: '床', emoji: '🛏️' },
-                { name: '電視', emoji: '📺' },
-                { name: '書', emoji: '📖' },
-                { name: '球', emoji: '⚽' },
-                { name: '牙刷', emoji: '🪥' },
-                { name: '杯子', emoji: '☕' },
-                { name: '時鐘', emoji: '⏰' },
-                { name: '手機', emoji: '📱' },
-                { name: '鉛筆', emoji: '✏️' },
-                { name: '剪刀', emoji: '✂️' },
+                { name: '汽車', emoji: '🚗' }, { name: '椅子', emoji: '🪑' }, { name: '床', emoji: '🛏️' }, { name: '電視', emoji: '📺' }, { name: '書', emoji: '📖' }, { name: '球', emoji: '⚽' }, { name: '牙刷', emoji: '🪥' }, { name: '杯子', emoji: '☕' }, { name: '時鐘', emoji: '⏰' }, { name: '手機', emoji: '📱' }, { name: '鉛筆', emoji: '✏️' }, { name: '剪刀', emoji: '✂️' },
             ],
             emotions: [
-                { name: '開心', emoji: '😊' },
-                { name: '難過', emoji: '😢' },
-                { name: '生氣', emoji: '😠' },
-                { name: '驚訝', emoji: '😮' },
-                { name: '害怕', emoji: '😨' },
-                { name: '愛睏', emoji: '😴' },
-                { name: '大笑', emoji: '😂' },
-                { name: '思考', emoji: '🤔' },
-                { name: '哭泣', emoji: '😭' },
-                { name: '喜愛', emoji: '🥰' },
-                { name: '無聊', emoji: '😑' },
-                { name: '興奮', emoji: '🤩' },
+                { name: '開心', emoji: '😊' }, { name: '難過', emoji: '😢' }, { name: '生氣', emoji: '😠' }, { name: '驚訝', emoji: '😮' }, { name: '害怕', emoji: '😨' }, { name: '愛睏', emoji: '😴' }, { name: '大笑', emoji: '😂' }, { name: '思考', emoji: '🤔' }, { name: '哭泣', emoji: '😭' }, { name: '喜愛', emoji: '🥰' }, { name: '無聊', emoji: '😑' }, { name: '興奮', emoji: '🤩' },
             ],
             custom: []
         };
         
-        // 從 localStorage 讀取自製圖卡
-        try {
-            const savedCustomCards = localStorage.getItem('customFlashcards');
-            if (savedCustomCards) {
-                cardData.custom = JSON.parse(savedCustomCards);
-            }
-        } catch (e) {
-            console.error("無法解析儲存的圖卡資料:", e);
-            localStorage.removeItem('customFlashcards');
-        }
-
         // --- 變數宣告 ---
         const cardGrid = document.getElementById('card-grid');
         const categoryNav = document.getElementById('category-nav');
         const customCardSection = document.getElementById('custom-card-section');
+        const customSectionTitle = document.getElementById('custom-section-title');
         const imageUpload = document.getElementById('image-upload');
         const imagePreview = document.getElementById('image-preview');
         const cardText = document.getElementById('card-text');
         const addCardBtn = document.getElementById('add-card-btn');
+        const cancelEditBtn = document.getElementById('cancel-edit-btn');
         const errorMessage = document.getElementById('error-message');
+        const confirmModal = document.getElementById('confirm-modal');
+        const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+        const modalCancelBtn = document.getElementById('modal-cancel-btn');
         
         let currentCategory = 'animals';
         let uploadedImage = null;
+        let editingIndex = null; // 追蹤正在編輯的圖卡索引
+        let cardToDeleteIndex = null; // 追蹤準備刪除的圖卡索引
 
         // --- 核心功能 ---
 
+        // 從 localStorage 讀取/儲存自製圖卡
+        function loadCustomCards() {
+            try {
+                const savedCustomCards = localStorage.getItem('customFlashcards');
+                if (savedCustomCards) cardData.custom = JSON.parse(savedCustomCards);
+            } catch (e) {
+                console.error("無法解析儲存的圖卡資料:", e);
+                localStorage.removeItem('customFlashcards');
+            }
+        }
+        function saveCustomCards() {
+             try {
+                localStorage.setItem('customFlashcards', JSON.stringify(cardData.custom));
+            } catch (e) {
+                console.error("儲存圖卡失敗:", e);
+                errorMessage.textContent = '抱歉，儲存圖卡時發生錯誤。';
+            }
+        }
+
         // 文字轉語音函數
         function speak(text) {
-            // 停止目前所有正在播放的語音
             window.speechSynthesis.cancel();
-            
             const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'zh-TW'; // 設定語言為台灣繁體中文
-            utterance.rate = 0.9; // 語速稍慢，適合兒童
-            utterance.pitch = 1.2; // 音調稍高
+            utterance.lang = 'zh-TW';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.2;
             window.speechSynthesis.speak(utterance);
         }
 
@@ -174,78 +156,116 @@
             cardGrid.innerHTML = '';
             errorMessage.textContent = '';
             
-            // 更新按鈕樣式
             document.querySelectorAll('.category-btn').forEach(btn => {
-                if (btn.dataset.category === category) {
-                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-offset-sky-50');
-                } else {
-                    btn.classList.remove('ring-2', 'ring-offset-2', 'ring-offset-sky-50');
-                }
+                btn.classList.toggle('ring-2', btn.dataset.category === category);
+                btn.classList.toggle('ring-offset-2', btn.dataset.category === category);
+                btn.classList.toggle('ring-offset-sky-50', btn.dataset.category === category);
             });
 
-            // 顯示或隱藏自製圖卡區
-            if (category === 'custom') {
-                customCardSection.classList.remove('hidden');
-            } else {
-                customCardSection.classList.add('hidden');
-            }
-            
-            // 處理沒有自訂圖卡的狀況
+            customCardSection.classList.toggle('hidden', category !== 'custom');
+            if (category === 'custom' && editingIndex === null) resetForm();
+
             if (category === 'custom' && cardData.custom.length === 0) {
-                cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 text-xl py-8">
-                    <p>還沒有自製圖卡喔！</p>
-                    <p>快來上傳照片、輸入文字，建立第一張圖卡吧！</p>
-                </div>`;
+                cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 text-xl py-8"><p>還沒有自製圖卡喔！</p><p>快來上傳照片、輸入文字，建立第一張圖卡吧！</p></div>`;
                 return;
             }
 
-            // 建立圖卡
             const cards = cardData[category];
             cards.forEach((card, index) => {
                 const cardElement = document.createElement('div');
-                cardElement.className = 'card-item bg-white rounded-2xl shadow-lg p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-xl active:scale-95';
-                
+                cardElement.className = 'card-item bg-white rounded-2xl shadow-lg p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-xl active:scale-95 relative';
+                cardElement.dataset.index = index;
+
                 let cardVisualHTML = '';
-                // 如果是自製圖卡(有image)，就顯示圖片
                 if (card.image) { 
                     cardVisualHTML = `<img src="${card.image}" alt="${card.name}" class="w-full h-auto object-cover rounded-lg aspect-square">`;
-                } 
-                // 如果是預設圖卡(有emoji)，就顯示符號
-                else if (card.emoji) { 
-                    cardVisualHTML = `<div class="w-full aspect-square flex items-center justify-center rounded-lg bg-sky-100">
-                                        <span class="text-7xl md:text-8xl">${card.emoji}</span>
-                                      </div>`;
+                } else if (card.emoji) { 
+                    cardVisualHTML = `<div class="w-full aspect-square flex items-center justify-center rounded-lg bg-sky-100"><span class="text-7xl md:text-8xl">${card.emoji}</span></div>`;
+                }
+
+                let buttonsHTML = '';
+                if (category === 'custom') {
+                    buttonsHTML = `
+                        <div class="absolute top-2 right-2 flex flex-col gap-2">
+                            <button class="edit-btn bg-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition" data-index="${index}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L14.732 3.732z" /></svg>
+                            </button>
+                            <button class="delete-btn bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition" data-index="${index}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                            </button>
+                        </div>
+                    `;
                 }
 
                 cardElement.innerHTML = `
                     ${cardVisualHTML}
                     <p class="text-xl md:text-2xl font-bold text-gray-700 text-center">${card.name}</p>
+                    ${buttonsHTML}
                 `;
-
-                cardElement.addEventListener('click', () => {
-                    speak(card.pronunciation || card.name); // 優先使用發音修正，否則用原名
-                    // 點擊動畫
-                    cardElement.classList.add('card-clicked');
-                    setTimeout(() => {
-                        cardElement.classList.remove('card-clicked');
-                    }, 200);
-                });
-
                 cardGrid.appendChild(cardElement);
             });
         }
+
+        // 重設自製表單
+        function resetForm() {
+            cardText.value = '';
+            uploadedImage = null;
+            imagePreview.innerHTML = '<span>點我上傳照片</span>';
+            imageUpload.value = '';
+            errorMessage.textContent = '';
+            editingIndex = null;
+            customSectionTitle.textContent = '建立你自己的圖卡';
+            addCardBtn.textContent = '新增圖卡';
+            addCardBtn.classList.replace('bg-blue-500', 'bg-pink-500');
+            addCardBtn.classList.replace('hover:bg-blue-600', 'hover:bg-pink-600');
+            cancelEditBtn.classList.add('hidden');
+        }
+
+        // --- 事件處理 ---
         
-        // --- 事件監聽 ---
-        
-        // 分類按鈕點擊
+        // 1. 分類導覽
         categoryNav.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON') {
-                const category = e.target.dataset.category;
-                displayCards(category);
+                displayCards(e.target.dataset.category);
             }
         });
 
-        // 圖片上傳預覽
+        // 2. 圖卡點擊 (發音, 編輯, 刪除)
+        cardGrid.addEventListener('click', (e) => {
+            const button = e.target.closest('button');
+            if (button) { // 如果點擊的是按鈕
+                const index = button.dataset.index;
+                if (button.classList.contains('edit-btn')) {
+                    // --- 編輯 ---
+                    editingIndex = parseInt(index, 10);
+                    const card = cardData.custom[editingIndex];
+                    cardText.value = card.name;
+                    uploadedImage = card.image;
+                    imagePreview.innerHTML = `<img src="${card.image}" class="w-full h-full object-cover rounded-lg">`;
+                    customSectionTitle.textContent = '編輯圖卡';
+                    addCardBtn.textContent = '更新圖卡';
+                    addCardBtn.classList.replace('bg-pink-500', 'bg-blue-500');
+                    addCardBtn.classList.replace('hover:bg-pink-600', 'hover:bg-blue-600');
+                    cancelEditBtn.classList.remove('hidden');
+                    customCardSection.scrollIntoView({ behavior: 'smooth' });
+                } else if (button.classList.contains('delete-btn')) {
+                    // --- 刪除 ---
+                    cardToDeleteIndex = parseInt(index, 10);
+                    confirmModal.classList.remove('hidden');
+                }
+            } else { // 如果點擊的是圖卡本身
+                const cardItem = e.target.closest('.card-item');
+                if (cardItem) {
+                    const index = cardItem.dataset.index;
+                    const card = cardData[currentCategory][index];
+                    speak(card.name);
+                    cardItem.classList.add('card-clicked');
+                    setTimeout(() => cardItem.classList.remove('card-clicked'), 200);
+                }
+            }
+        });
+
+        // 3. 圖片上傳
         imageUpload.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -258,47 +278,50 @@
             }
         });
         
-        // 新增自訂圖卡
+        // 4. 新增或更新圖卡
         addCardBtn.addEventListener('click', () => {
             const text = cardText.value.trim();
-            
             if (!uploadedImage || !text) {
                 errorMessage.textContent = '請務必上傳一張照片並輸入文字！';
                 return;
             }
             
-            cardData.custom.push({ name: text, image: uploadedImage });
-            
-            // 將自製圖卡儲存到 localStorage
-            try {
-                localStorage.setItem('customFlashcards', JSON.stringify(cardData.custom));
-            } catch (e) {
-                console.error("儲存圖卡失敗:", e);
-                errorMessage.textContent = '抱歉，儲存圖卡時發生錯誤。';
+            if (editingIndex !== null) { // 更新模式
+                cardData.custom[editingIndex] = { name: text, image: uploadedImage };
+            } else { // 新增模式
+                cardData.custom.push({ name: text, image: uploadedImage });
             }
-
-            // 重設輸入欄位
-            cardText.value = '';
-            uploadedImage = null;
-            imagePreview.innerHTML = '<span>點我上傳照片</span>';
-            imageUpload.value = ''; // 清空 file input
-            errorMessage.textContent = '';
             
-            // 重新顯示自訂圖卡
+            saveCustomCards();
+            resetForm();
             displayCards('custom');
+        });
+
+        // 5. 取消編輯
+        cancelEditBtn.addEventListener('click', resetForm);
+
+        // 6. 刪除確認視窗
+        modalConfirmBtn.addEventListener('click', () => {
+            if (cardToDeleteIndex !== null) {
+                cardData.custom.splice(cardToDeleteIndex, 1);
+                saveCustomCards();
+                displayCards('custom');
+            }
+            confirmModal.classList.add('hidden');
+            cardToDeleteIndex = null;
+        });
+        modalCancelBtn.addEventListener('click', () => {
+            confirmModal.classList.add('hidden');
+            cardToDeleteIndex = null;
         });
 
         // --- 初始載入 ---
         window.onload = () => {
-            // 檢查瀏覽器是否支援語音合成 API
             if ('speechSynthesis' in window) {
-                // 預設顯示動物分類
+                loadCustomCards();
                 displayCards('animals');
             } else {
-                cardGrid.innerHTML = `<div class="col-span-full text-center text-red-500 text-xl py-8">
-                    <p>抱歉，您的瀏覽器不支援語音功能，</p>
-                    <p>請嘗試使用 Chrome 或 Edge 瀏覽器。</p>
-                </div>`;
+                cardGrid.innerHTML = `<div class="col-span-full text-center text-red-500 text-xl py-8"><p>抱歉，您的瀏覽器不支援語音功能，</p><p>請嘗試使用 Chrome 或 Edge 瀏覽器。</p></div>`;
                 categoryNav.style.display = 'none';
             }
         };
@@ -306,9 +329,4 @@
     </script>
 </body>
 </html>
-
-
-
-
-
 
