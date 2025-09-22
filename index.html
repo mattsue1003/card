@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童口說練習圖卡</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        /* 當卡片被點擊時的動畫效果 */
+        .card-clicked {
+            transform: scale(0.95);
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-sky-50 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-sky-700">兒童口說練習圖卡</h1>
+            <p class="text-gray-500 mt-2">點選圖卡就可以聽到聲音喔！</p>
+        </header>
+
+        <!-- 分類按鈕 -->
+        <nav id="category-nav" class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            <button data-category="animals" class="category-btn bg-blue-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 transition-all duration-200">可愛動物</button>
+            <button data-category="fruits" class="category-btn bg-green-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-200">蔬果派對</button>
+            <button data-category="items" class="category-btn bg-yellow-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-75 transition-all duration-200">生活用品</button>
+            <button data-category="emotions" class="category-btn bg-purple-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-opacity-75 transition-all duration-200">我的心情</p>
+            <button data-category="custom" class="category-btn bg-pink-500 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 transition-all duration-200">自製圖卡</button>
+        </nav>
+
+        <!-- 圖卡顯示區 -->
+        <main id="card-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+            <!-- 圖卡將會動態插入此處 -->
+        </main>
+
+        <!-- 自製圖卡區 -->
+        <section id="custom-card-section" class="mt-12 p-6 bg-white rounded-2xl shadow-lg border border-gray-200 hidden">
+            <h2 class="text-2xl font-bold text-center text-pink-700 mb-6">建立你自己的圖卡</h2>
+            <div class="flex flex-col md:flex-row items-center gap-6">
+                <div class="w-full md:w-1/3 text-center">
+                    <label for="image-upload" class="cursor-pointer">
+                        <div id="image-preview" class="w-48 h-48 mx-auto bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-300 hover:border-pink-400 hover:text-pink-500 transition-all">
+                            <span>點我上傳照片</span>
+                        </div>
+                    </label>
+                    <input type="file" id="image-upload" class="hidden" accept="image/*">
+                </div>
+                <div class="w-full md:w-2/3">
+                    <div class="mb-4">
+                        <label for="card-text" class="block text-lg font-medium text-gray-700 mb-2">輸入圖卡文字：</label>
+                        <input type="text" id="card-text" placeholder="例如：爸爸的車" class="w-full px-4 py-2 text-lg border-2 border-gray-300 rounded-lg focus:ring-pink-500 focus:border-pink-500 transition">
+                    </div>
+                    <button id="add-card-btn" class="w-full bg-pink-500 text-white py-3 rounded-lg font-bold text-lg shadow-md hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-400 focus:ring-opacity-75 transition-transform transform hover:scale-105">新增圖卡</button>
+                </div>
+            </div>
+             <p id="error-message" class="text-red-500 text-center mt-4"></p>
+        </section>
+
+    </div>
+
+    <script>
+        // --- 資料庫 ---
+        const cardData = {
+            animals: [
+                { name: '貓', image: 'https://placehold.co/200x200/FFC0CB/000000?text=貓' },
+                { name: '狗', image: 'https://placehold.co/200x200/A52A2A/FFFFFF?text=狗' },
+                { name: '大象', image: 'https://placehold.co/200x200/808080/FFFFFF?text=大象' },
+                { name: '獅子', image: 'https://placehold.co/200x200/FFD700/000000?text=獅子' },
+                { name: '猴子', image: 'https://placehold.co/200x200/964B00/FFFFFF?text=猴子' },
+                { name: '兔子', image: 'https://placehold.co/200x200/FFFFFF/000000?text=兔子' },
+                { name: '熊', image: 'https://placehold.co/200x200/8B4513/FFFFFF?text=熊' },
+                { name: '魚', image: 'https://placehold.co/200x200/00BFFF/FFFFFF?text=魚' },
+            ],
+            fruits: [
+                { name: '蘋果', image: 'https://placehold.co/200x200/FF0000/FFFFFF?text=蘋果' },
+                { name: '香蕉', image: 'https://placehold.co/200x200/FFFF00/000000?text=香蕉' },
+                { name: '橘子', image: 'https://placehold.co/200x200/FFA500/FFFFFF?text=橘子' },
+                { name: '草莓', image: 'https://placehold.co/200x200/FF6347/FFFFFF?text=草莓' },
+                { name: '西瓜', image: 'https://placehold.co/200x200/228B22/FFFFFF?text=西瓜' },
+                { name: '葡萄', image: 'https://placehold.co/200x200/800080/FFFFFF?text=葡萄' },
+                { name: '鳳梨', image: 'https://placehold.co/200x200/F4A460/000000?text=鳳梨' },
+            ],
+            items: [
+                { name: '桌子', image: 'https://placehold.co/200x200/D2B48C/000000?text=桌子' },
+                { name: '椅子', image: 'https://placehold.co/200x200/CD853F/FFFFFF?text=椅子' },
+                { name: '床', image: 'https://placehold.co/200x200/ADD8E6/000000?text=床' },
+                { name: '電視', image: 'https://placehold.co/200x200/000000/FFFFFF?text=電視' },
+                { name: '書', image: 'https://placehold.co/200x200/4682B4/FFFFFF?text=書' },
+                { name: '球', image: 'https://placehold.co/200x200/FF4500/FFFFFF?text=球' },
+                { name: '牙刷', image: 'https://placehold.co/200x200/00FFFF/000000?text=牙刷' },
+                { name: '杯子', image: 'https://placehold.co/200x200/E6E6FA/000000?text=杯子' },
+            ],
+            emotions: [
+                { name: '開心', image: 'https://placehold.co/200x200/FFFF00/000000?text=開心' },
+                { name: '難過', image: 'https://placehold.co/200x200/1E90FF/FFFFFF?text=難過' },
+                { name: '生氣', image: 'https://placehold.co/200x200/DC143C/FFFFFF?text=生氣' },
+                { name: '驚訝', image: 'https://placehold.co/200x200/FF8C00/FFFFFF?text=驚訝' },
+                { name: '害怕', image: 'https://placehold.co/200x200/8A2BE2/FFFFFF?text=害怕' },
+                { name: '愛睏', image: 'https://placehold.co/200x200/C0C0C0/000000?text=愛睏' },
+            ],
+            custom: []
+        };
+        
+        // --- 變數宣告 ---
+        const cardGrid = document.getElementById('card-grid');
+        const categoryNav = document.getElementById('category-nav');
+        const customCardSection = document.getElementById('custom-card-section');
+        const imageUpload = document.getElementById('image-upload');
+        const imagePreview = document.getElementById('image-preview');
+        const cardText = document.getElementById('card-text');
+        const addCardBtn = document.getElementById('add-card-btn');
+        const errorMessage = document.getElementById('error-message');
+        
+        let currentCategory = 'animals';
+        let uploadedImage = null;
+
+        // --- 核心功能 ---
+
+        // 文字轉語音函數
+        function speak(text) {
+            // 停止目前所有正在播放的語音
+            window.speechSynthesis.cancel();
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'zh-TW'; // 設定語言為台灣繁體中文
+            utterance.rate = 0.9; // 語速稍慢，適合兒童
+            utterance.pitch = 1.2; // 音調稍高
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // 顯示圖卡
+        function displayCards(category) {
+            currentCategory = category;
+            cardGrid.innerHTML = '';
+            errorMessage.textContent = '';
+            
+            // 更新按鈕樣式
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                if (btn.dataset.category === category) {
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-offset-sky-50');
+                } else {
+                    btn.classList.remove('ring-2', 'ring-offset-2', 'ring-offset-sky-50');
+                }
+            });
+
+            // 顯示或隱藏自製圖卡區
+            if (category === 'custom') {
+                customCardSection.classList.remove('hidden');
+            } else {
+                customCardSection.classList.add('hidden');
+            }
+            
+            // 處理沒有自訂圖卡的狀況
+            if (category === 'custom' && cardData.custom.length === 0) {
+                cardGrid.innerHTML = `<div class="col-span-full text-center text-gray-500 text-xl py-8">
+                    <p>還沒有自製圖卡喔！</p>
+                    <p>快來上傳照片、輸入文字，建立第一張圖卡吧！</p>
+                </div>`;
+                return;
+            }
+
+            // 建立圖卡
+            const cards = cardData[category];
+            cards.forEach(card => {
+                const cardElement = document.createElement('div');
+                cardElement.className = 'card-item bg-white rounded-2xl shadow-lg p-3 flex flex-col items-center justify-center gap-2 cursor-pointer transition-transform duration-200 hover:scale-105 hover:shadow-xl active:scale-95';
+                
+                cardElement.innerHTML = `
+                    <img src="${card.image}" alt="${card.name}" class="w-full h-auto object-cover rounded-lg aspect-square">
+                    <p class="text-xl md:text-2xl font-bold text-gray-700 text-center">${card.name}</p>
+                `;
+
+                cardElement.addEventListener('click', () => {
+                    speak(card.name);
+                    // 點擊動畫
+                    cardElement.classList.add('card-clicked');
+                    setTimeout(() => {
+                        cardElement.classList.remove('card-clicked');
+                    }, 200);
+                });
+
+                cardGrid.appendChild(cardElement);
+            });
+        }
+        
+        // --- 事件監聽 ---
+        
+        // 分類按鈕點擊
+        categoryNav.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                const category = e.target.dataset.category;
+                displayCards(category);
+            }
+        });
+
+        // 圖片上傳預覽
+        imageUpload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedImage = event.target.result;
+                    imagePreview.innerHTML = `<img src="${uploadedImage}" class="w-full h-full object-cover rounded-lg">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 新增自訂圖卡
+        addCardBtn.addEventListener('click', () => {
+            const text = cardText.value.trim();
+            
+            if (!uploadedImage || !text) {
+                errorMessage.textContent = '請務必上傳一張照片並輸入文字！';
+                return;
+            }
+            
+            cardData.custom.push({ name: text, image: uploadedImage });
+            
+            // 重設輸入欄位
+            cardText.value = '';
+            uploadedImage = null;
+            imagePreview.innerHTML = '<span>點我上傳照片</span>';
+            imageUpload.value = ''; // 清空 file input
+            errorMessage.textContent = '';
+            
+            // 重新顯示自訂圖卡
+            displayCards('custom');
+        });
+
+        // --- 初始載入 ---
+        window.onload = () => {
+            // 檢查瀏覽器是否支援語音合成 API
+            if ('speechSynthesis' in window) {
+                // 預設顯示動物分類
+                displayCards('animals');
+            } else {
+                cardGrid.innerHTML = `<div class="col-span-full text-center text-red-500 text-xl py-8">
+                    <p>抱歉，您的瀏覽器不支援語音功能，</p>
+                    <p>請嘗試使用 Chrome 或 Edge 瀏覽器。</p>
+                </div>`;
+                categoryNav.style.display = 'none';
+            }
+        };
+
+    </script>
+</body>
+</html>
